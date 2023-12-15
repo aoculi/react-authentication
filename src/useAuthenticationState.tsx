@@ -20,7 +20,7 @@ export function useAuthenticationState() {
     setAuthentication({
       isAuthenticated,
       isLoading: false,
-      isError: false,
+      isError: error ? true : false,
       error,
       accessToken,
       data,

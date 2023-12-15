@@ -35,7 +35,6 @@ Optionnal props:
 - refreshToken: Token refresh logic
 - afterSignIn: Post-sign-in logic
 - afterSignOut: Post-sign-out logic
-- storageKey:
 
 ## useAuthentication
 
@@ -45,11 +44,20 @@ Within any component wrapped by AuthenticationProvider, you can use the useAuthe
 import { useAuthentication } from 'react-authentication'
 
 function YourComponent() {
-  const { isAuthenticated, isLoading, signIn, signOut } = useAuthentication()
+  const {
+    signIn,
+    signOut,
+    isAuthenticated,
+    isLoading,
+    isError,
+    error,
+    accessToken,
+    data,
+  } = useAuthentication()
 }
 ```
 
-### Signing
+### signing
 
 Call this method with an object containing accessToken and any additional data you need to store.
 
@@ -62,7 +70,7 @@ signIn({
 })
 ```
 
-### Signout
+### signout
 
 This method, which requires no parameters, clears the authentication state.
 
@@ -70,9 +78,35 @@ This method, which requires no parameters, clears the authentication state.
 signOut()
 ```
 
-## Guard
+### isAuthenticated
 
-This package doesn't include middleware for route protection, but you can utilize the provided methods to implement such functionality.
+A boolean flag that represents the user's authentication status in your application. When isAuthenticated is true, it indicates that the user is currently authenticated, meaning they have successfully logged in or have a valid accesToken.
+
+### isLoading
+
+Indicates whether the authentication process is in progress. This is particularly useful for handling UI states in your application, such as displaying loading indicators or disabling certain elements while the authentication status is being determined.
+
+For example, you can use isLoading to show a spinner on your login page or to prevent user interaction with parts of your application until the authentication process has completed [cf: Guard code below](#guard).
+
+### isError
+
+If an error arises while attempting to refresh the token—such as network issues, invalid credentials, or expired tokens—this flag is set to true. This allows you to respond appropriately, for instance, by alerting the user, redirecting to a login page, or attempting a re-authentication.
+
+### error
+
+The error message that appears in case of an error occurrence.
+
+### accesToken
+
+The token value returned by the sign-in process.
+
+### data
+
+Optionnal data returned by the sign-in process.
+
+## Middleware (with react-router-dom)
+
+This package does not come with built-in middleware for protecting routes, however, you can leverage its provided methods to achieve this functionality.
 
 ```jsx
 import React from 'react'
