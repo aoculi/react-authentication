@@ -18,6 +18,6 @@ jobs:
       - run: npm ci
       - name: Create release pull request or publish
         id: changesets
-        uses: changesets/actions@v1
+        uses: changesets/action@v1
         with:
           publish: npm run build
