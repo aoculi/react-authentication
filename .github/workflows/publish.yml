@@ -1,0 +1,23 @@
+name: Publish
+on:
+  push:
+    branches:
+      - 'master'
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - name: Create release pull request or publish
+        id: changesets
+        uses: changesets/actions@v1
+        with:
+          publish: npm run build
