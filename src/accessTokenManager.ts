@@ -1,16 +1,18 @@
 import { JwtPayload, jwtDecode } from 'jwt-decode'
-import { CheckRefreshTokenValidity } from '../types'
+import { AccessTokenManagerParams } from './types'
 
-export const checkRefreshTokenValidity = async ({
+export const accessTokenManager = async ({
   storageProvider,
-  setAuthenticationValues,
+  login,
+  logout,
+  setError,
   refreshToken,
-}: CheckRefreshTokenValidity) => {
+}: AccessTokenManagerParams) => {
   const value = await storageProvider.get()
 
   // No accessToken stored
   if (!value?.accessToken) {
-    setAuthenticationValues({})
+    logout()
     return
   }
 
@@ -19,8 +21,7 @@ export const checkRefreshTokenValidity = async ({
   if (decoded?.exp) {
     // if is isValid
     if (new Date(decoded.exp * 1000).getTime() > Date.now()) {
-      setAuthenticationValues({
-        isAuthenticated: true,
+      login({
         accessToken: value.accessToken,
         data: value?.data || null,
       })
@@ -35,13 +36,13 @@ export const checkRefreshTokenValidity = async ({
   try {
     newToken = await refreshToken()
   } catch (error: any) {
-    setAuthenticationValues({ error: error?.message })
+    setError(error?.message)
     storageProvider.remove()
     return
   }
 
   if (!newToken) {
-    setAuthenticationValues({})
+    logout()
     storageProvider.remove()
     return
   }
@@ -49,9 +50,7 @@ export const checkRefreshTokenValidity = async ({
   await storageProvider.set({
     accessToken: newToken.accessToken,
   })
-  setAuthenticationValues({
-    isAuthenticated: true,
-    error: false,
+  login({
     accessToken: newToken.accessToken,
     data: value?.data || null,
   })

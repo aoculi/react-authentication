@@ -5,16 +5,16 @@ import {
   AuthenticationProviderProps,
   SignInParams,
 } from './types'
-import { checkRefreshTokenValidity } from './utils/refresh'
-import { useAuthenticationState } from './useAuthenticationState.js'
-import { CookieStorageProvider } from './storage/CookieStorageProvider.js'
-import { LocalStorageProvider } from './storage/LocalStorageProvider.js'
+import { useAuthenticationState } from './useAuthenticationState'
+import { CookieStorageProvider } from './storage/CookieStorageProvider'
+import { LocalStorageProvider } from './storage/LocalStorageProvider'
+import { accessTokenManager } from './accessTokenManager'
 
 export const AuthContext = createContext<Authentication>({
   isAuthenticated: false,
   isLoading: true,
   isError: false,
-  error: false,
+  error: null,
   accessToken: null,
   data: null,
   signIn: async () => {},
@@ -29,7 +29,7 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   storageKey,
   storageType,
 }): JSX.Element => {
-  const { authentication, setAuthenticationValues } = useAuthenticationState()
+  const { authentication, login, logout, setError } = useAuthenticationState()
 
   const currentStorageKey = storageKey || '_authentication'
 
@@ -40,22 +40,24 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
 
   const signIn = async ({ accessToken, data }: SignInParams) => {
     await storageProvider.set({ accessToken, data })
-    setAuthenticationValues({ accessToken, data, isAuthenticated: true })
+    login({ accessToken, data })
 
     if (afterSignIn) afterSignIn()
   }
 
   const signOut = async () => {
-    setAuthenticationValues({})
+    logout()
     await storageProvider.remove()
 
     if (afterSignOut) afterSignOut()
   }
 
   useEffect(() => {
-    checkRefreshTokenValidity({
+    accessTokenManager({
       storageProvider,
-      setAuthenticationValues,
+      login,
+      logout,
+      setError,
       refreshToken,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -9,18 +9,11 @@ export interface AuthenticationProviderProps extends React.PropsWithChildren {
   children: ReactElement
 }
 
-export interface setAuthenticationValues {
-  error?: boolean
-  isAuthenticated?: boolean
-  accessToken?: string | null
-  data?: any | null
-}
-
 export interface AuthenticationParams {
   isAuthenticated: boolean
   isLoading: boolean
   isError: boolean
-  error: boolean
+  error: string | null
   accessToken: string | null
   data: string | null
 }
@@ -39,9 +32,11 @@ export type Authentication = AuthenticationParams & {
   }
 }
 
-export interface CheckRefreshTokenValidity {
+export interface AccessTokenManagerParams {
   storageProvider: IStorageProvider
-  setAuthenticationValues: Function
+  login: ({ accessToken, data }: SignInParams) => void
+  logout: () => void
+  setError: (message: string) => void
   refreshToken?: Function
 }
 
