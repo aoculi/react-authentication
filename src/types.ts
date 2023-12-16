@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactElement, ReactNode } from 'react'
 
 export interface AuthenticationProviderProps extends React.PropsWithChildren {
   afterSignIn?: Function
@@ -9,6 +9,17 @@ export interface AuthenticationProviderProps extends React.PropsWithChildren {
   children: ReactElement
 }
 
+export interface RequireRolesProps extends React.PropsWithChildren {
+  roles: string[]
+  children: ReactElement
+  fallBack?: ReactNode
+}
+
+export interface RequireAuthProps {
+  redirectPath: string
+  loader?: ReactElement
+}
+
 export interface AuthenticationParams {
   isAuthenticated: boolean
   isLoading: boolean
@@ -16,11 +27,13 @@ export interface AuthenticationParams {
   error: string | null
   accessToken: string | null
   data: string | null
+  roles: string[]
 }
 
 export type SignInParams = {
   accessToken?: string | null
   data?: any | null
+  roles?: string[] | null
 }
 
 export type Authentication = AuthenticationParams & {

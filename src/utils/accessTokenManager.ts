@@ -1,5 +1,5 @@
 import { JwtPayload, jwtDecode } from 'jwt-decode'
-import { AccessTokenManagerParams } from './types'
+import { AccessTokenManagerParams } from '../types'
 
 export const accessTokenManager = async ({
   storageProvider,

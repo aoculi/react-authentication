@@ -4,11 +4,11 @@ import {
   Authentication,
   AuthenticationProviderProps,
   SignInParams,
-} from './types'
-import { useAuthenticationState } from './useAuthenticationState'
-import { CookieStorageProvider } from './storage/CookieStorageProvider'
-import { LocalStorageProvider } from './storage/LocalStorageProvider'
-import { accessTokenManager } from './accessTokenManager'
+} from '../types'
+import { useAuthenticationState } from '../hooks/useAuthenticationState'
+import { CookieStorageProvider } from '../utils/storage/CookieStorageProvider'
+import { LocalStorageProvider } from '../utils/storage/LocalStorageProvider'
+import { accessTokenManager } from '../utils/accessTokenManager'
 
 export const AuthContext = createContext<Authentication>({
   isAuthenticated: false,
@@ -17,6 +17,7 @@ export const AuthContext = createContext<Authentication>({
   error: null,
   accessToken: null,
   data: null,
+  roles: [],
   signIn: async () => {},
   signOut: async () => {},
 })
@@ -38,9 +39,9 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
       ? new CookieStorageProvider(currentStorageKey)
       : new LocalStorageProvider(currentStorageKey)
 
-  const signIn = async ({ accessToken, data }: SignInParams) => {
+  const signIn = async ({ accessToken, data, roles }: SignInParams) => {
     await storageProvider.set({ accessToken, data })
-    login({ accessToken, data })
+    login({ accessToken, data, roles })
 
     if (afterSignIn) afterSignIn()
   }

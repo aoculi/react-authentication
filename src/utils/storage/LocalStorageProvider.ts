@@ -1,4 +1,4 @@
-import { IStorageProvider } from '../types.js'
+import { IStorageProvider } from '../../types.js'
 
 export class LocalStorageProvider implements IStorageProvider {
   private storageKey: string

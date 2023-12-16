@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { AuthenticationParams, SignInParams } from './types'
+import { AuthenticationParams, SignInParams } from '../types'
 
 export function useAuthenticationState() {
   const [authentication, setAuthentication] = useState<AuthenticationParams>({
@@ -9,9 +9,10 @@ export function useAuthenticationState() {
     error: null,
     accessToken: null,
     data: null,
+    roles: [],
   })
 
-  const login = ({ accessToken, data }: SignInParams) => {
+  const login = ({ accessToken, data, roles }: SignInParams) => {
     setAuthentication({
       isAuthenticated: true,
       isLoading: false,
@@ -19,6 +20,7 @@ export function useAuthenticationState() {
       error: null,
       accessToken: accessToken || null,
       data,
+      roles: roles || [],
     })
   }
 
@@ -30,6 +32,7 @@ export function useAuthenticationState() {
       error: null,
       accessToken: null,
       data: null,
+      roles: [],
     })
   }
 

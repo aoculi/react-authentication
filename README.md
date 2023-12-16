@@ -61,6 +61,7 @@ function YourComponent() {
     error,
     accessToken,
     data,
+    roles,
   } = useAuthentication()
 }
 ```
@@ -75,6 +76,9 @@ signIn({
   data: {
     /* additional data */
   },
+  roles: [
+    /* all user roles */
+  ],
 })
 ```
 
@@ -112,52 +116,92 @@ The token value returned by the sign-in process.
 
 Optionnal data returned by the sign-in process.
 
-## Middleware (with react-router-dom)
+### roles
 
-This package does not come with built-in middleware for protecting routes, however, you can leverage its provided methods to achieve this functionality.
+Optionnal user roles returned by the sign-in process.
+
+## Middlewares
+
+### RequireAuth (require react-router-dom)
+
+The RequireAuth component is used to protect routes that should only be accessible to authenticated users. If the user is not authenticated, they are redirected to a specified login or authentication route.
+
+Props
+
+- **redirectPath** (string): The path to redirect unauthenticated users to.
+- **loader** (React component, optional): A loader component displayed while authentication status is being determined (e.g., during token validation).
+
+Usage Example
 
 ```jsx
-import React from 'react'
-import { Navigate, Outlet, useLocation } from 'react-router-dom'
-import { useAuthentication } from 'react-authentication'
+import { Routes, Route } from 'react-router-dom'
+import { RequireAuth } from 'react-authentication'
+import Loader from './components/Loader'
+import Home from './pages/Home'
 
-export function RequireAuth({ redirectPath }) {
-  const location = useLocation()
-  const { isLoading, isAuthenticated } = useAuthentication()
-
-  if (isLoading) return <div>Loading...</div>
-  if (!isAuthenticated)
-    return <Navigate to={redirectPath} state={{ from: location }} replace />
-
-  return <Outlet />
-}
-
-export function RequireNoAuth({ redirectPath }) {
-  const { isLoading, isAuthenticated } = useAuthentication()
-
-  if (isLoading) return <div>Loading...</div>
-  if (!isAuthenticated) return <Outlet />
-
-  return <Navigate to={redirectPath} replace />
+function App() {
+  return
+    <Routes>
+      <Route element={
+        <RequireAuth redirectPath="/auth/login" loader={<Loader />} />}
+      >
+        <Route path="/" element={<Home />} />
+      </Route>
+    <Routes>
 }
 ```
 
-And use it in your app file:
+### RequireNoAuth (require react-router-dom)
+
+The RequireNoAuth component is used to protect routes that should be accessible only to unauthenticated users, like login or sign-up pages. Authenticated users visiting these routes are redirected to a specified path.
+
+Props
+
+- **redirectPath** (string): The path to redirect authenticated users to.
+- **loader** (React component, optional): A loader component displayed while authentication status is being determined.
+
+Usage Example
 
 ```jsx
-function App() {
-  return (
-    <Routes>
-      <Route element={<RequireAuth redirectPath={'/auth/login'} />}>
-        <Route path="/" element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
-        </Route>
-      </Route>
+import { Routes, Route } from 'react-router-dom'
+import { RequireAuth } from 'react-authentication'
+import Loader from './components/Loader'
+import Login from './pages/Login'
 
-      <Route element={<RequireNoAuth redirectPath={'/'} />}>
+function App() {
+  return
+    <Routes>
+      <Route element={
+        <RequireNoAuth redirectPath="/" loader={<Loader />} />}
+      >
         <Route path="/auth/login" element={<Login />} />
       </Route>
-    </Routes>
+    <Routes>
+}
+```
+
+### RequireRoles
+
+The RequireRoles component is used to guard specific routes or components, ensuring that only users with the specified roles can access them. If a user does not have all the required roles, a fallback component is rendered instead.
+
+Props
+
+- **roles** (array of strings): An array of roles required to access the component or route. Users must have all these roles to view the content.
+- **children** (ReactNode): The content or components that are protected by the role check.
+- **fallBack** (ReactNode, optional): A fallback component to render if the user does not have the required roles. Defaults to null.
+
+Usage Example
+
+```jsx
+import { RequireRoles } from 'react-authentication'
+import AdminDashboard from './components/AdminDashboard'
+import AccessDenied from './components/AccessDenied'
+
+function Component() {
+  return (
+    <RequireRoles roles={['admin', 'editor']} fallBack={<AccessDenied />}>
+      <AdminDashboard />
+    </RequireRoles>
   )
 }
 ```
