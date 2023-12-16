@@ -1,5 +1,5 @@
 {
-  "name": "react-authentication",
+  "name": "@aoculi/react-authentication",
   "version": "0.3.2",
   "license": "MIT",
   "main": "dist/index.js",

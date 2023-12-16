@@ -9,9 +9,9 @@ React Authentication offers a straightforward and efficient way to handle user a
 To install the package, use npm or yarn:
 
 ```sh
-npm install react-authentication
+npm install @aoculi/react-authentication
 # or
-yarn add react-authentication
+yarn add @aoculi/react-authentication
 ```
 
 ## AuthenticationProvider
@@ -19,7 +19,7 @@ yarn add react-authentication
 A context provider that wraps your application or components where authentication state is needed.
 
 ```jsx
-import { AuthenticationProvider } from 'react-authentication'
+import { AuthenticationProvider } from '@aoculi/react-authentication'
 
 function App() {
   return (
@@ -49,7 +49,7 @@ The AuthenticationProvider component accepts several optional props to customize
 Within any component wrapped by AuthenticationProvider, you can use the useAuthentication hook to access the authentication state and control methods.
 
 ```jsx
-import { useAuthentication } from 'react-authentication'
+import { useAuthentication } from '@aoculi/react-authentication'
 
 function YourComponent() {
   const {
@@ -135,7 +135,7 @@ Usage Example
 
 ```jsx
 import { Routes, Route } from 'react-router-dom'
-import { RequireAuth } from 'react-authentication'
+import { RequireAuth } from '@aoculi/react-authentication'
 import Loader from './components/Loader'
 import Home from './pages/Home'
 
@@ -164,7 +164,7 @@ Usage Example
 
 ```jsx
 import { Routes, Route } from 'react-router-dom'
-import { RequireAuth } from 'react-authentication'
+import { RequireAuth } from '@aoculi/react-authentication'
 import Loader from './components/Loader'
 import Login from './pages/Login'
 
@@ -193,7 +193,7 @@ Props
 Usage Example
 
 ```jsx
-import { RequireRoles } from 'react-authentication'
+import { RequireRoles } from '@aoculi/react-authentication'
 import AdminDashboard from './components/AdminDashboard'
 import AccessDenied from './components/AccessDenied'
 
