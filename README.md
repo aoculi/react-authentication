@@ -1,8 +1,10 @@
-# react authentication
+# React Authentication
+
+> **⚠️ Important Notice: This library is currently in beta, and its API is subject to change. It is not recommended for use in production environments at this stage.**
 
 ## Introduction
 
-React Authentication offers a straightforward and efficient way to handle user authentication in your React applications. The primary goal of this package is to store the access token and optional user data returned by the authentication API during the login process. By managing these critical pieces of authentication information, React Authentication simplifies the process of guarding certain pages in your React app, ensuring that only authenticated users can access them.
+The primary goal of **React Authentication** is to store the access token and optional user data returned by the authentication API during the login process. By managing these critical pieces of authentication information, this package simplifies the process of guarding certain pages in your React app, ensuring that only authenticated users can access them.
 
 ## Installation
 
