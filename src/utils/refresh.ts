@@ -1,13 +1,12 @@
 import { JwtPayload, jwtDecode } from 'jwt-decode'
-import { getStorage, setStorage, removeStorage } from './storage'
 import { CheckRefreshTokenValidity } from '../types'
 
 export const checkRefreshTokenValidity = async ({
-  key,
+  storageProvider,
   setAuthenticationValues,
   refreshToken,
 }: CheckRefreshTokenValidity) => {
-  const value = await getStorage(key)
+  const value = await storageProvider.get()
 
   // No accessToken stored
   if (!value?.accessToken) {
@@ -37,17 +36,17 @@ export const checkRefreshTokenValidity = async ({
     newToken = await refreshToken()
   } catch (error: any) {
     setAuthenticationValues({ error: error?.message })
-    removeStorage(key)
+    storageProvider.remove()
     return
   }
 
   if (!newToken) {
     setAuthenticationValues({})
-    removeStorage(key)
+    storageProvider.remove()
     return
   }
 
-  await setStorage(key, {
+  await storageProvider.set({
     accessToken: newToken.accessToken,
   })
   setAuthenticationValues({

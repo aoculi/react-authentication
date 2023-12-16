@@ -30,11 +30,19 @@ function App() {
 }
 ```
 
-Optionnal props:
+### Optional Props
 
-- refreshToken: Token refresh logic
-- afterSignIn: Post-sign-in logic
-- afterSignOut: Post-sign-out logic
+The AuthenticationProvider component accepts several optional props to customize its behavior and functionality:
+
+- **refreshToken**: A function that contains the logic for refreshing the authentication token. This is invoked when the token needs to be refreshed, such as when it's nearing expiration.
+
+- **afterSignIn**: A function that is executed after the sign-in process completes successfully. Use this to implement any logic that should run immediately after a user signs in.
+
+- **afterSignOut**: A function that is called following a successful sign-out. This can be used to perform cleanup tasks or redirect the user after they log out.
+
+- **storageKey**: A string specifying the name of the key under which authentication-related information will be stored. The default value is \_authentication. This is useful if you need to customize the storage key, for instance, to avoid conflicts with other items in storage.
+
+- **storageType**: Defines the type of storage mechanism to be used for persisting authentication data. The options are 'localstorage' and 'cookie'. The default is 'localstorage'. Choose 'cookie' if you require cookie-based storage, such as for server-side rendering scenarios or for additional security configurations that cookies allow.
 
 ## useAuthentication
 

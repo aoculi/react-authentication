@@ -5,9 +5,10 @@ import {
   AuthenticationProviderProps,
   SignInParams,
 } from './types'
-import { setStorage, removeStorage } from './utils/storage'
 import { checkRefreshTokenValidity } from './utils/refresh'
 import { useAuthenticationState } from './useAuthenticationState.js'
+import { CookieStorageProvider } from './storage/CookieStorageProvider.js'
+import { LocalStorageProvider } from './storage/LocalStorageProvider.js'
 
 export const AuthContext = createContext<Authentication>({
   isAuthenticated: false,
@@ -26,13 +27,19 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   afterSignOut,
   afterSignIn,
   storageKey,
+  storageType,
 }): JSX.Element => {
   const { authentication, setAuthenticationValues } = useAuthenticationState()
 
-  const currentStorageKey = storageKey || 'authenticate'
+  const currentStorageKey = storageKey || '_authentication'
+
+  const storageProvider =
+    storageType === 'cookie'
+      ? new CookieStorageProvider(currentStorageKey)
+      : new LocalStorageProvider(currentStorageKey)
 
   const signIn = async ({ accessToken, data }: SignInParams) => {
-    await setStorage(currentStorageKey, { accessToken, data })
+    await storageProvider.set({ accessToken, data })
     setAuthenticationValues({ accessToken, data, isAuthenticated: true })
 
     if (afterSignIn) afterSignIn()
@@ -40,14 +47,14 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
 
   const signOut = async () => {
     setAuthenticationValues({})
-    await removeStorage(currentStorageKey)
+    await storageProvider.remove()
 
     if (afterSignOut) afterSignOut()
   }
 
   useEffect(() => {
     checkRefreshTokenValidity({
-      key: currentStorageKey,
+      storageProvider,
       setAuthenticationValues,
       refreshToken,
     })

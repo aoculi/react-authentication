@@ -5,6 +5,7 @@ export interface AuthenticationProviderProps extends React.PropsWithChildren {
   afterSignOut?: Function
   refreshToken?: Function
   storageKey?: string
+  storageType?: 'localstorage' | 'cookie'
   children: ReactElement
 }
 
@@ -39,7 +40,13 @@ export type Authentication = AuthenticationParams & {
 }
 
 export interface CheckRefreshTokenValidity {
-  key: string
+  storageProvider: IStorageProvider
   setAuthenticationValues: Function
   refreshToken?: Function
+}
+
+export interface IStorageProvider {
+  get(): Promise<any>
+  set(value: any): Promise<void>
+  remove(): Promise<void>
 }
