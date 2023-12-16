@@ -8,13 +8,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: npm/action-setup@v2
-        with:
-          version: 7
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
-          cache: 'npm'
-      - run: npm install --frozen-lockfile
-      - run: npm install lint && npm run  build
+          node-version: 18.x
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - run: npm run lint && npm run build
