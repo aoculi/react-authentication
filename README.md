@@ -4,7 +4,10 @@
 
 ## Introduction
 
-The primary goal of **React Authentication** is to store the JWT accessToken and optional user data returned by the authentication API during the login process. By managing these critical pieces of authentication information, this package simplifies the process of guarding certain pages in your React app, ensuring that only authenticated users can access them.
+**React Authentication** is a package designed for managing JWT access tokens and user data in your React applications. It streamlines the authentication process by:
+
+- **Storing JWT Access Tokens**: Securely handles the storage of JWT access tokens post-login, facilitating continuous user authentication throughout the app.
+- **Guarding Pages and Element Visibility**: Offers the ability to restrict access to certain pages for authenticated users, but also allows for displaying specific elements within your application based on the user's assigned roles, ensuring a secure and role-tailored user experience.
 
 ## Installation
 
