@@ -1,5 +1,14 @@
 # react-authentication
 
+## 0.5.0
+
+### Minor Changes
+
+- 1c8ac2b: - Renamed `RequireRoles` to `RequirePermissions`.
+  - The `accessToken` variable has been renamed to `jwt`.
+  - Remove the possibility to define a cookie storage and use localstorage as the main storage.
+  - Improve the documentation
+
 ## 0.4.0
 
 ### Minor Changes
