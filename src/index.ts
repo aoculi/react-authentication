@@ -1,4 +1,5 @@
 export { AuthenticationProvider } from './providers/AuthenticationProvider'
 export { useAuthentication } from './hooks/useAuthentication'
+export { usePermission } from './hooks/usePermission'
 export * from './middlewares/RequireAuth'
-export * from './middlewares/RequirePermissions.js'
+export * from './middlewares/RequirePermissions'

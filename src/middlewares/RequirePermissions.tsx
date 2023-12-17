@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
+
 import { AuthContext } from '../providers/AuthenticationProvider'
-import { RequirePermissionsProps } from '../types.js'
+import { RequirePermissionsProps } from '../types'
 
 export const RequirePermissions = ({
   roles,

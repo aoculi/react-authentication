@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 
 import { AuthContext } from '../providers/AuthenticationProvider'
-import { RequireAuthProps } from '../types.js'
+import { RequireAuthProps } from '../types'
 
 export function RequireAuth({ redirectPath, loader }: RequireAuthProps) {
   const location = useLocation()

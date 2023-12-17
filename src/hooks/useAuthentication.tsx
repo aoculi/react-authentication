@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
 import { AuthContext } from '../providers/AuthenticationProvider'
-import { Authentication } from '../types.js'
+import { Authentication } from '../types'
 
 /**
  *

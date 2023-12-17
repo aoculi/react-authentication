@@ -20,7 +20,7 @@ yarn add @aoculi/react-authentication
 
 ```jsx
 import { AuthenticationProvider, useAuthentication } from '@aoculi/react-authentication'
-import { login } from './service/authApi  '
+import { login } from './service/authApi'
 import { LoginForm } from './component/LoginForm'
 
 function App() {
@@ -105,13 +105,12 @@ function App() {
 
 The AuthenticationProvider component accepts several optional props to customize its behavior and functionality:
 
-- **refreshToken**: A function that contains the logic for refreshing the authentication token. This is invoked when the token needs to be refreshed, such as when it's nearing expiration.
-
-- **afterSignIn**: A function that is executed after the sign-in process completes successfully. Use this to implement any logic that should run immediately after a user signs in.
-
-- **afterSignOut**: A function that is called following a successful sign-out. This can be used to perform cleanup tasks or redirect the user after they log out.
-
-- **storageKey**: A string specifying the name of the key used by the localStorage store. The default value is \_authentication. This is useful if you need to customize the storage key, for instance, to avoid conflicts with other items in storage.
+| Property       | Description                                                                                                                                                                                                                           |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `refreshToken` | A function that contains the logic for refreshing the authentication token. This is invoked when the token needs to be refreshed, such as when it's nearing expiration.                                                               |
+| `afterSignIn`  | A function that is executed after the sign-in process completes successfully. Use this to implement any logic that should run immediately after a user signs in.                                                                      |
+| `afterSignOut` | A function that is called following a successful sign-out. This can be used to perform cleanup tasks or redirect the user after they log out.                                                                                         |
+| `storageKey`   | A string specifying the name of the key used by the localStorage store. The default value is \_authentication. This is useful if you need to customize the storage key, for instance, to avoid conflicts with other items in storage. |
 
 ### useAuthentication
 
@@ -131,6 +130,7 @@ function YourComponent() {
     jwt,
     data,
     roles,
+    permissions,
   } = useAuthentication()
 }
 ```
@@ -143,10 +143,13 @@ Call this method with an object containing your valid JWT accessToken, and any a
 signIn({
   jwt: 'your_jwt_accessToken',
   data: {
-    /* additional data */
+    /* optional data */
   },
   roles: [
-    /* user roles */
+    /* optional user roles */
+  ],
+  permissions: [
+    /* optional user permissions */
   ],
 })
 ```
@@ -188,6 +191,63 @@ Optionnal data returned by the sign-in process.
 #### roles
 
 Optionnal user roles returned by the sign-in process.
+
+#### permissions
+
+Optionnal user permissions returned by the sign-in process.
+
+### usePermission
+
+Within any component wrapped by AuthenticationProvider, you can use the usePermission hook to manage your user permissions.
+
+```jsx
+import { usePermission } from '@aoculi/react-authentication'
+
+function YourComponent() {
+  const { hasRoles, hasPermissions, can, assignRole, givePermission } =
+    usePermission()
+}
+```
+
+#### hasRoles
+
+This method, allow you to check the user roles.
+
+```javascript
+const isWriter = hasRoles(['writer'])
+```
+
+#### hasPermissions
+
+This method, allow you to check the user permissions.
+
+```javascript
+const allow = hasPermissions(['edit articles'])
+```
+
+#### can
+
+This method is a shortcut for hasPermissions, allow you to check for a single permission.
+
+```javascript
+const allow = can('edit articles')
+```
+
+#### assignRole
+
+This method allow you to change the roles of the user anywhere in the lifecycle of your application.
+
+```javascript
+assignRole('editor')
+```
+
+#### givePermission
+
+This method allow you to change the permissions of the user anywhere in the lifecycle of your application.
+
+```javascript
+givePermission('delete articles')
+```
 
 ### Middlewares
 

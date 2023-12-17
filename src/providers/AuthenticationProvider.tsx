@@ -18,6 +18,7 @@ export const AuthContext = createContext<Authentication>({
   jwt: null,
   data: null,
   roles: [],
+  permissions: [],
   signIn: async () => {},
   signOut: async () => {},
 })

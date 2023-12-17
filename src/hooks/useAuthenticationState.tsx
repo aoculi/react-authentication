@@ -10,9 +10,10 @@ export function useAuthenticationState() {
     jwt: null,
     data: null,
     roles: [],
+    permissions: [],
   })
 
-  const login = ({ jwt, data, roles }: SignInParams) => {
+  const login = ({ jwt, data, roles, permissions }: SignInParams) => {
     setAuthentication({
       isAuthenticated: true,
       isLoading: false,
@@ -21,6 +22,7 @@ export function useAuthenticationState() {
       jwt: jwt || null,
       data,
       roles: roles || [],
+      permissions: permissions || [],
     })
   }
 
@@ -33,6 +35,7 @@ export function useAuthenticationState() {
       jwt: null,
       data: null,
       roles: [],
+      permissions: [],
     })
   }
 
@@ -44,5 +47,19 @@ export function useAuthenticationState() {
     }))
   }
 
-  return { authentication, login, logout, setError }
+  const setRole = (role: string) => {
+    setAuthentication((prev) => ({
+      ...prev,
+      roles: [...prev.roles, role],
+    }))
+  }
+
+  const setPermission = (permission: string) => {
+    setAuthentication((prev) => ({
+      ...prev,
+      permissions: [...prev.permissions, permission],
+    }))
+  }
+
+  return { authentication, login, logout, setError, setRole, setPermission }
 }

@@ -28,12 +28,14 @@ export interface AuthenticationParams {
   jwt: string | null
   data: string | null
   roles: string[]
+  permissions: string[]
 }
 
 export type SignInParams = {
   jwt?: string | null
   data?: any | null
   roles?: string[] | null
+  permissions?: string[] | null
 }
 
 export type Authentication = AuthenticationParams & {
