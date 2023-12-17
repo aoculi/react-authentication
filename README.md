@@ -204,7 +204,7 @@ Within any component wrapped by AuthenticationProvider, you can use the usePermi
 import { usePermission } from '@aoculi/react-authentication'
 
 function YourComponent() {
-  const { hasRoles, hasPermissions, can, assignRole, givePermission } =
+  const { hasRoles, hasPermissions, can, assignRole, givePermissionTo } =
     usePermission()
 }
 ```
@@ -241,12 +241,12 @@ This method allow you to change the roles of the user anywhere in the lifecycle 
 assignRole('editor')
 ```
 
-#### givePermission
+#### givePermissionTo
 
 This method allow you to change the permissions of the user anywhere in the lifecycle of your application.
 
 ```javascript
-givePermission('delete articles')
+givePermissionTo('delete articles')
 ```
 
 ### Middlewares

@@ -34,12 +34,12 @@ export function usePermission() {
     return true
   }
 
-  const givePermission = (permission: string): Boolean => {
+  const givePermissionTo = (permission: string): Boolean => {
     if (hasPermissions([permission])) return false
 
     setPermission(permission)
     return true
   }
 
-  return { hasRoles, hasPermissions, can, assignRole, givePermission }
+  return { hasRoles, hasPermissions, can, assignRole, givePermissionTo }
 }
