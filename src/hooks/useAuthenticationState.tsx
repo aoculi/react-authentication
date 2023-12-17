@@ -7,18 +7,18 @@ export function useAuthenticationState() {
     isLoading: true,
     isError: false,
     error: null,
-    accessToken: null,
+    jwt: null,
     data: null,
     roles: [],
   })
 
-  const login = ({ accessToken, data, roles }: SignInParams) => {
+  const login = ({ jwt, data, roles }: SignInParams) => {
     setAuthentication({
       isAuthenticated: true,
       isLoading: false,
       isError: false,
       error: null,
-      accessToken: accessToken || null,
+      jwt: jwt || null,
       data,
       roles: roles || [],
     })
@@ -30,7 +30,7 @@ export function useAuthenticationState() {
       isLoading: false,
       isError: false,
       error: null,
-      accessToken: null,
+      jwt: null,
       data: null,
       roles: [],
     })

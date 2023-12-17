@@ -11,8 +11,7 @@
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
-    "lint": "tsc",
-    "lint:fix": "eslint src --fix",
+    "lint": "eslint src --fix",
     "dev": "tsup src/index.ts --watch"
   },
   "repository": {

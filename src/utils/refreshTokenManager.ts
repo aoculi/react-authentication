@@ -1,28 +1,28 @@
 import { JwtPayload, jwtDecode } from 'jwt-decode'
-import { AccessTokenManagerParams } from '../types'
+import { RefreshTokenManagerParams } from '../types'
 
-export const accessTokenManager = async ({
+export const refreshTokenManager = async ({
   storageProvider,
   login,
   logout,
   setError,
   refreshToken,
-}: AccessTokenManagerParams) => {
+}: RefreshTokenManagerParams) => {
   const value = await storageProvider.get()
 
-  // No accessToken stored
-  if (!value?.accessToken) {
+  // No jwt stored
+  if (!value?.jwt) {
     logout()
     return
   }
 
-  // We have an accessToken
-  const decoded: JwtPayload = jwtDecode(value.accessToken)
+  // We have an jwt
+  const decoded: JwtPayload = jwtDecode(value.jwt)
   if (decoded?.exp) {
     // if is isValid
     if (new Date(decoded.exp * 1000).getTime() > Date.now()) {
       login({
-        accessToken: value.accessToken,
+        jwt: value.jwt,
         data: value?.data || null,
       })
       return
@@ -48,10 +48,10 @@ export const accessTokenManager = async ({
   }
 
   await storageProvider.set({
-    accessToken: newToken.accessToken,
+    jwt: newToken.jwt,
   })
   login({
-    accessToken: newToken.accessToken,
+    jwt: newToken.jwt,
     data: value?.data || null,
   })
 }

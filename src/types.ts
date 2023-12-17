@@ -9,7 +9,7 @@ export interface AuthenticationProviderProps extends React.PropsWithChildren {
   children: ReactElement
 }
 
-export interface RequireRolesProps extends React.PropsWithChildren {
+export interface RequirePermissionsProps extends React.PropsWithChildren {
   roles: string[]
   children: ReactElement
   fallBack?: ReactNode
@@ -25,29 +25,29 @@ export interface AuthenticationParams {
   isLoading: boolean
   isError: boolean
   error: string | null
-  accessToken: string | null
+  jwt: string | null
   data: string | null
   roles: string[]
 }
 
 export type SignInParams = {
-  accessToken?: string | null
+  jwt?: string | null
   data?: any | null
   roles?: string[] | null
 }
 
 export type Authentication = AuthenticationParams & {
   signIn: {
-    (params: { accessToken?: string | null; data?: any | null }): Promise<void>
+    (params: { jwt?: string | null; data?: any | null }): Promise<void>
   }
   signOut: {
     (): Promise<void>
   }
 }
 
-export interface AccessTokenManagerParams {
+export interface RefreshTokenManagerParams {
   storageProvider: IStorageProvider
-  login: ({ accessToken, data }: SignInParams) => void
+  login: ({ jwt, data }: SignInParams) => void
   logout: () => void
   setError: (message: string) => void
   refreshToken?: Function

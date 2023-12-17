@@ -4,7 +4,7 @@
 
 ## Introduction
 
-The primary goal of **React Authentication** is to store the access token and optional user data returned by the authentication API during the login process. By managing these critical pieces of authentication information, this package simplifies the process of guarding certain pages in your React app, ensuring that only authenticated users can access them.
+The primary goal of **React Authentication** is to store the JWT accessToken and optional user data returned by the authentication API during the login process. By managing these critical pieces of authentication information, this package simplifies the process of guarding certain pages in your React app, ensuring that only authenticated users can access them.
 
 ## Installation
 
@@ -42,9 +42,7 @@ The AuthenticationProvider component accepts several optional props to customize
 
 - **afterSignOut**: A function that is called following a successful sign-out. This can be used to perform cleanup tasks or redirect the user after they log out.
 
-- **storageKey**: A string specifying the name of the key under which authentication-related information will be stored. The default value is \_authentication. This is useful if you need to customize the storage key, for instance, to avoid conflicts with other items in storage.
-
-- **storageType**: Defines the type of storage mechanism to be used for persisting authentication data. The options are 'localstorage' and 'cookie'. The default is 'localstorage'. Choose 'cookie' if you require cookie-based storage, such as for server-side rendering scenarios or for additional security configurations that cookies allow.
+- **storageKey**: A string specifying the name of the key used by the localStorage store. The default value is \_authentication. This is useful if you need to customize the storage key, for instance, to avoid conflicts with other items in storage.
 
 ## useAuthentication
 
@@ -61,7 +59,7 @@ function YourComponent() {
     isLoading,
     isError,
     error,
-    accessToken,
+    jwt,
     data,
     roles,
   } = useAuthentication()
@@ -70,16 +68,16 @@ function YourComponent() {
 
 ### signing
 
-Call this method with an object containing accessToken and any additional data you need to store.
+Call this method with an object containing your valid JWT accessToken, and any additional information you need to store.
 
 ```javascript
 signIn({
-  accessToken: 'your_access_token',
+  jwt: 'your_jwt_accessToken',
   data: {
     /* additional data */
   },
   roles: [
-    /* all user roles */
+    /* user roles */
   ],
 })
 ```
@@ -110,7 +108,7 @@ If an error arises while attempting to refresh the token—such as network issue
 
 The error message that appears in case of an error occurrence.
 
-### accesToken
+### jwt
 
 The token value returned by the sign-in process.
 
@@ -182,9 +180,9 @@ function App() {
 }
 ```
 
-### RequireRoles
+### RequirePermissions
 
-The RequireRoles component is used to guard specific routes or components, ensuring that only users with the specified roles can access them. If a user does not have all the required roles, a fallback component is rendered instead.
+The RequirePermissions component is used to guard specific routes or components, ensuring that only users with the specified roles can access them. If a user does not have all the required roles, a fallback component is rendered instead.
 
 Props
 
@@ -195,15 +193,15 @@ Props
 Usage Example
 
 ```jsx
-import { RequireRoles } from '@aoculi/react-authentication'
+import { RequirePermissions } from '@aoculi/react-authentication'
 import AdminDashboard from './components/AdminDashboard'
 import AccessDenied from './components/AccessDenied'
 
 function Component() {
   return (
-    <RequireRoles roles={['admin', 'editor']} fallBack={<AccessDenied />}>
+    <RequirePermissions roles={['admin', 'editor']} fallBack={<AccessDenied />}>
       <AdminDashboard />
-    </RequireRoles>
+    </RequirePermissions>
   )
 }
 ```

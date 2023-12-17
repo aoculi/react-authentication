@@ -1,12 +1,12 @@
 import React, { useContext } from 'react'
 import { AuthContext } from '../providers/AuthenticationProvider'
-import { RequireRolesProps } from '../types.js'
+import { RequirePermissionsProps } from '../types.js'
 
-export const RequireRoles = ({
+export const RequirePermissions = ({
   roles,
   children,
   fallBack = null,
-}: RequireRolesProps) => {
+}: RequirePermissionsProps) => {
   const { roles: userRoles } = useContext(AuthContext)
 
   // Check if the user has all the required roles
