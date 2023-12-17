@@ -16,7 +16,76 @@ npm install @aoculi/react-authentication
 yarn add @aoculi/react-authentication
 ```
 
-## AuthenticationProvider
+## Integration Example
+
+```jsx
+import { AuthenticationProvider, useAuthentication } from '@aoculi/react-authentication'
+import { login } from './service/authApi  '
+import { LoginForm } from './component/LoginForm'
+
+function App() {
+  return (
+    <AuthenticationProvider>
+      <Page />
+    </AuthenticationProvider>
+  )
+}
+
+function Page() {
+  const {
+    signIn,
+    signOut,
+    isAuthenticated,
+    isLoading,
+    jwt,
+    data,
+  } = useAuthentication()
+
+  const onLogin = (event) => {
+    event.preventDefault()
+
+    const formData = new FormData(event.target);
+    const response = await fetch('https://my-api.com/login', {
+      method: 'POST',
+      body: formData
+    })
+
+    if (response.ok) {
+      const data = await response.json();
+      signin({ jwt: data.accessToken, data: { username: data.username} })
+    }
+  }
+
+  const onLogout = () => {
+    /* Application logic here */
+    signOut()
+  }
+
+  if(isLoading) return <div>Loading..</div>
+
+  return (
+    <div>
+      <h1>My Page</div>
+      <main>
+        /* Display a login form when the user is not authenticated */
+        {!isAuthenticated && <LoginForm onSubmit={onLogin} />}
+
+        /* Display user information after authentication */
+        {isAuthenticated && <div>Welcome {data.username}!</div>}
+
+        /* Log out the user */
+        {isAuthenticated && <button onClick={onLogout}>Log out</button>}
+      </main>
+    </div>
+  )
+}
+
+render(<App />, document.getElementById('root'))
+```
+
+## API
+
+### AuthenticationProvider
 
 A context provider that wraps your application or components where authentication state is needed.
 
@@ -32,7 +101,7 @@ function App() {
 }
 ```
 
-### Optional Props
+#### Optional Props
 
 The AuthenticationProvider component accepts several optional props to customize its behavior and functionality:
 
@@ -44,7 +113,7 @@ The AuthenticationProvider component accepts several optional props to customize
 
 - **storageKey**: A string specifying the name of the key used by the localStorage store. The default value is \_authentication. This is useful if you need to customize the storage key, for instance, to avoid conflicts with other items in storage.
 
-## useAuthentication
+### useAuthentication
 
 Within any component wrapped by AuthenticationProvider, you can use the useAuthentication hook to access the authentication state and control methods.
 
@@ -66,7 +135,7 @@ function YourComponent() {
 }
 ```
 
-### signing
+#### signing
 
 Call this method with an object containing your valid JWT accessToken, and any additional information you need to store.
 
@@ -82,7 +151,7 @@ signIn({
 })
 ```
 
-### signout
+#### signout
 
 This method, which requires no parameters, clears the authentication state.
 
@@ -90,39 +159,39 @@ This method, which requires no parameters, clears the authentication state.
 signOut()
 ```
 
-### isAuthenticated
+#### isAuthenticated
 
 A boolean flag that represents the user's authentication status in your application. When isAuthenticated is true, it indicates that the user is currently authenticated, meaning they have successfully logged in or have a valid accesToken.
 
-### isLoading
+#### isLoading
 
 Indicates whether the authentication process is in progress. This is particularly useful for handling UI states in your application, such as displaying loading indicators or disabling certain elements while the authentication status is being determined.
 
 For example, you can use isLoading to show a spinner on your login page or to prevent user interaction with parts of your application until the authentication process has completed [cf: Guard code below](#guard).
 
-### isError
+#### isError
 
 If an error arises while attempting to refresh the token—such as network issues, invalid credentials, or expired tokens—this flag is set to true. This allows you to respond appropriately, for instance, by alerting the user, redirecting to a login page, or attempting a re-authentication.
 
-### error
+#### error
 
 The error message that appears in case of an error occurrence.
 
-### jwt
+#### jwt
 
 The token value returned by the sign-in process.
 
-### data
+#### data
 
 Optionnal data returned by the sign-in process.
 
-### roles
+#### roles
 
 Optionnal user roles returned by the sign-in process.
 
-## Middlewares
+### Middlewares
 
-### RequireAuth (require react-router-dom)
+#### RequireAuth (require react-router-dom)
 
 The RequireAuth component is used to protect routes that should only be accessible to authenticated users. If the user is not authenticated, they are redirected to a specified login or authentication route.
 
@@ -151,7 +220,7 @@ function App() {
 }
 ```
 
-### RequireNoAuth (require react-router-dom)
+#### RequireNoAuth (require react-router-dom)
 
 The RequireNoAuth component is used to protect routes that should be accessible only to unauthenticated users, like login or sign-up pages. Authenticated users visiting these routes are redirected to a specified path.
 
@@ -180,7 +249,7 @@ function App() {
 }
 ```
 
-### RequirePermissions
+#### RequirePermissions
 
 The RequirePermissions component is used to guard specific routes or components, ensuring that only users with the specified roles can access them. If a user does not have all the required roles, a fallback component is rendered instead.
 
