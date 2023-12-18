@@ -265,11 +265,6 @@ givePermissionTo('delete articles')
 
 The RequireAuth component is used to protect routes that should only be accessible to authenticated users. If the user is not authenticated, they are redirected to a specified login or authentication route.
 
-Props
-
-- **redirectPath** (string): The path to redirect unauthenticated users to.
-- **loader** (React component, optional): A loader component displayed while authentication status is being determined (e.g., during token validation).
-
 Usage Example
 
 ```jsx
@@ -290,14 +285,16 @@ function App() {
 }
 ```
 
+##### Props
+
+| Property       | Description                                                                                                                                |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `redirectPath` | (string): The path to redirect unauthenticated users to.                                                                                   |
+| `loader`       | (React component, optional): A loader component displayed while authentication status is being determined (e.g., during token validation). |
+
 #### RequireNoAuth (require react-router-dom)
 
 The RequireNoAuth component is used to protect routes that should be accessible only to unauthenticated users, like login or sign-up pages. Authenticated users visiting these routes are redirected to a specified path.
-
-Props
-
-- **redirectPath** (string): The path to redirect authenticated users to.
-- **loader** (React component, optional): A loader component displayed while authentication status is being determined.
 
 Usage Example
 
@@ -319,15 +316,16 @@ function App() {
 }
 ```
 
+##### Props
+
+| Property       | Description                                                                                                                                |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `redirectPath` | (string): The path to redirect authenticated users to.                                                                                     |
+| `loader`       | (React component, optional): A loader component displayed while authentication status is being determined (e.g., during token validation). |
+
 #### RequirePermissions
 
 The RequirePermissions component is used to guard specific routes or components, ensuring that only users with the specified roles can access them. If a user does not have all the required roles, a fallback component is rendered instead.
-
-Props
-
-- **roles** and **permissions** (array of strings, optional): Arrays specifying the roles and permissions required for accessing the component or route. Users must possess all listed roles and permissions to access the content. If either array is empty or not provided, that particular criterion is ignored.
-- **children** (ReactNode): The protected content or components displayed when access criteria are met.
-- **fallBack** (ReactNode, optional): A component rendered when the user lacks the required roles or permissions. Defaults to **null**.
 
 Usage Example
 
@@ -348,6 +346,14 @@ function Component() {
   )
 }
 ```
+
+##### Props
+
+| Property                  | Description                                                                                                                                                                                                                                                                         |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `roles` and `permissions` | (array of strings, optional): Arrays specifying the roles and permissions required for accessing the component or route. Users must possess all listed roles and permissions to access the content. If either array is empty or not provided, that particular criterion is ignored. |
+| `children`                | (ReactNode): The protected content or components displayed when access criteria are met.                                                                                                                                                                                            |
+| `fallBack`                | (ReactNode, optional): A component rendered when the user lacks the required roles or permissions. Defaults to **null**.                                                                                                                                                            |
 
 ## Contributing
 
