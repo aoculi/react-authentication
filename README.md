@@ -4,7 +4,7 @@
 
 ## Introduction
 
-The primary goal of **React Authentication** is to store the JWT accessToken and optional user data returned by the authentication API during the login process. By managing these critical pieces of authentication information, this package simplifies the process of guarding certain pages in your React app, ensuring that only authenticated users can access them.
+The primary goal of **React Authentication** is to store the JWT accessToken and optional user data returned by the authentication API during the login process. By managing these critical pieces of authentication information, this package simplifies the process of guarding certain pages in your React app, ensuring that only **authenticated** users with the proper **permissions** can access them.
 
 ## Installation
 
@@ -19,7 +19,7 @@ yarn add @aoculi/react-authentication
 ## Integration Example
 
 ```jsx
-import { AuthenticationProvider, useAuthentication } from '@aoculi/react-authentication'
+import { AuthenticationProvider, useAuthentication, usePermission } from '@aoculi/react-authentication'
 import { login } from './service/authApi'
 import { LoginForm } from './component/LoginForm'
 
@@ -41,6 +41,8 @@ function Page() {
     data,
   } = useAuthentication()
 
+  const { can } = usePermission()
+
   const onLogin = (event) => {
     event.preventDefault()
 
@@ -52,7 +54,12 @@ function Page() {
 
     if (response.ok) {
       const data = await response.json();
-      signin({ jwt: data.accessToken, data: { username: data.username} })
+      signin({
+        jwt: data.accessToken,
+        data: { username: data.username},
+        roles: data.roles,
+        permissions: data.permissions
+      })
     }
   }
 
@@ -75,6 +82,9 @@ function Page() {
 
         /* Log out the user */
         {isAuthenticated && <button onClick={onLogout}>Log out</button>}
+
+        /* Determine if the user has a specific permission */
+        {can('write articles') && <button onClick={}>New article</button>}
       </main>
     </div>
   )
@@ -222,7 +232,7 @@ const isWriter = hasRoles(['writer'])
 This method, allow you to check the user permissions.
 
 ```javascript
-const allow = hasPermissions(['edit articles'])
+const allow = hasPermissions(['write articles'])
 ```
 
 #### can
@@ -230,7 +240,7 @@ const allow = hasPermissions(['edit articles'])
 This method is a shortcut for hasPermissions, allow you to check for a single permission.
 
 ```javascript
-const allow = can('edit articles')
+const allow = can('write articles')
 ```
 
 #### assignRole
@@ -315,9 +325,9 @@ The RequirePermissions component is used to guard specific routes or components,
 
 Props
 
-- **roles** (array of strings): An array of roles required to access the component or route. Users must have all these roles to view the content.
-- **children** (ReactNode): The content or components that are protected by the role check.
-- **fallBack** (ReactNode, optional): A fallback component to render if the user does not have the required roles. Defaults to null.
+- **roles** and **permissions** (array of strings, optional): Arrays specifying the roles and permissions required for accessing the component or route. Users must possess all listed roles and permissions to access the content. If either array is empty or not provided, that particular criterion is ignored.
+- **children** (ReactNode): The protected content or components displayed when access criteria are met.
+- **fallBack** (ReactNode, optional): A component rendered when the user lacks the required roles or permissions. Defaults to **null**.
 
 Usage Example
 
@@ -328,7 +338,11 @@ import AccessDenied from './components/AccessDenied'
 
 function Component() {
   return (
-    <RequirePermissions roles={['admin', 'editor']} fallBack={<AccessDenied />}>
+    <RequirePermissions
+      roles={['editor']}
+      permissions={['delete articles']}
+      fallBack={<AccessDenied />}
+    >
       <AdminDashboard />
     </RequirePermissions>
   )

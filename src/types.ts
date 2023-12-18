@@ -11,6 +11,7 @@ export interface AuthenticationProviderProps extends React.PropsWithChildren {
 
 export interface RequirePermissionsProps extends React.PropsWithChildren {
   roles: string[]
+  permissions: string[]
   children: ReactElement
   fallBack?: ReactNode
 }
