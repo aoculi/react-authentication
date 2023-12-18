@@ -1,5 +1,11 @@
 # react-authentication
 
+## 0.6.0
+
+### Minor Changes
+
+- 3daa2a1: new permission feature
+
 ## 0.5.0
 
 ### Minor Changes
