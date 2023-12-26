@@ -4,6 +4,7 @@ import {
   Authentication,
   AuthenticationProviderProps,
   SignInParams,
+  SignOutParams,
 } from '../types'
 import { useAuthenticationState } from '../hooks/useAuthenticationState'
 import { CookieStorageProvider } from '../utils/storage/CookieStorageProvider'
@@ -26,8 +27,6 @@ export const AuthContext = createContext<Authentication>({
 export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   children,
   refreshToken,
-  afterSignOut,
-  afterSignIn,
   storageKey,
   storageType = 'localstorage',
 }): JSX.Element => {
@@ -40,18 +39,18 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
       ? new CookieStorageProvider(currentStorageKey)
       : new LocalStorageProvider(currentStorageKey)
 
-  const signIn = async ({ jwt, data, roles }: SignInParams) => {
+  const signIn = async ({ jwt, data, roles, afterSignIn }: SignInParams) => {
     await storageProvider.set({ jwt, data })
     login({ jwt, data, roles })
 
-    if (afterSignIn) afterSignIn()
+    if (afterSignIn) await afterSignIn()
   }
 
-  const signOut = async () => {
+  const signOut = async ({ afterSignOut }: SignOutParams) => {
     logout()
     await storageProvider.remove()
 
-    if (afterSignOut) afterSignOut()
+    if (afterSignOut) await afterSignOut()
   }
 
   useEffect(() => {

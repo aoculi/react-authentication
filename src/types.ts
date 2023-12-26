@@ -1,8 +1,6 @@
 import { ReactElement, ReactNode } from 'react'
 
 export interface AuthenticationProviderProps extends React.PropsWithChildren {
-  afterSignIn?: Function
-  afterSignOut?: Function
   refreshToken?: Function
   storageKey?: string
   storageType?: 'localstorage' | 'cookie'
@@ -27,7 +25,7 @@ export interface AuthenticationParams {
   isError: boolean
   error: string | null
   jwt: string | null
-  data: string | null
+  data: any | null
   roles: string[]
   permissions: string[]
 }
@@ -37,14 +35,25 @@ export type SignInParams = {
   data?: any | null
   roles?: string[] | null
   permissions?: string[] | null
+  afterSignIn?: Function
+}
+
+export type SignOutParams = {
+  afterSignOut?: Function
 }
 
 export type Authentication = AuthenticationParams & {
   signIn: {
-    (params: { jwt?: string | null; data?: any | null }): Promise<void>
+    (params: {
+      jwt?: string | null
+      data?: any | null
+      roles?: string[] | null
+      permissions?: string[] | null
+      afterSignIn?: Function
+    }): Promise<void>
   }
   signOut: {
-    (): Promise<void>
+    (params: { afterSignOut?: Function }): Promise<void>
   }
 }
 

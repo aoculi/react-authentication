@@ -21,12 +21,6 @@ export function usePermission() {
     )
   }
 
-  const can = (currentPermission: string): Boolean => {
-    if (!permissions?.length) return false
-
-    return permissions.includes(currentPermission)
-  }
-
   const assignRole = (role: string): Boolean => {
     if (hasRoles([role])) return false
 
@@ -41,5 +35,5 @@ export function usePermission() {
     return true
   }
 
-  return { hasRoles, hasPermissions, can, assignRole, givePermissionTo }
+  return { hasRoles, hasPermissions, assignRole, givePermissionTo }
 }

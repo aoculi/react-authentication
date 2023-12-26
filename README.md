@@ -41,7 +41,7 @@ function Page() {
     data,
   } = useAuthentication()
 
-  const { can } = usePermission()
+  const { hasPermissions } = usePermission()
 
   const onLogin = (event) => {
     event.preventDefault()
@@ -84,7 +84,7 @@ function Page() {
         {isAuthenticated && <button onClick={onLogout}>Log out</button>}
 
         /* Determine if the user has a specific permission */
-        {can('write articles') && <button onClick={}>New article</button>}
+        {hasPermissions(['write articles']) && <button onClick={}>New article</button>}
       </main>
     </div>
   )
@@ -118,8 +118,6 @@ The AuthenticationProvider component accepts several optional props to customize
 | Property       | Description                                                                                                                                                                                                                           |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `refreshToken` | A function that contains the logic for refreshing the authentication token. This is invoked when the token needs to be refreshed, such as when it's nearing expiration.                                                               |
-| `afterSignIn`  | A function that is executed after the sign-in process completes successfully. Use this to implement any logic that should run immediately after a user signs in.                                                                      |
-| `afterSignOut` | A function that is called following a successful sign-out. This can be used to perform cleanup tasks or redirect the user after they log out.                                                                                         |
 | `storageKey`   | A string specifying the name of the key used by the localStorage store. The default value is \_authentication. This is useful if you need to customize the storage key, for instance, to avoid conflicts with other items in storage. |
 
 ### useAuthentication
@@ -161,6 +159,9 @@ signIn({
   permissions: [
     /* optional user permissions */
   ],
+  afterSignIn: async () => {
+    /* a function that is executed after the sign-in process*/
+  },
 })
 ```
 
@@ -169,7 +170,11 @@ signIn({
 This method, which requires no parameters, clears the authentication state.
 
 ```javascript
-signOut()
+signOut({
+  afterSignOut: async () => {
+    /* a function that is called following a successful sign-out */
+  },
+})
 ```
 
 #### isAuthenticated
@@ -214,7 +219,7 @@ Within any component wrapped by AuthenticationProvider, you can use the usePermi
 import { usePermission } from '@aoculi/react-authentication'
 
 function YourComponent() {
-  const { hasRoles, hasPermissions, can, assignRole, givePermissionTo } =
+  const { hasRoles, hasPermissions, assignRole, givePermissionTo } =
     usePermission()
 }
 ```
@@ -233,14 +238,6 @@ This method, allow you to check the user permissions.
 
 ```javascript
 const allow = hasPermissions(['write articles'])
-```
-
-#### can
-
-This method is a shortcut for hasPermissions, allow you to check for a single permission.
-
-```javascript
-const allow = can('write articles')
 ```
 
 #### assignRole
