@@ -1,9 +1,102 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { Routes, Route } from 'react-router-dom'
+
+import { AuthenticationProvider } from '@aoculi/react-authentication'
+import {
+  useAuthentication,
+  RequireAuth,
+  RequireNoAuth,
+  RequirePermissions,
+} from '@aoculi/react-authentication'
 
 function App() {
-  return <div></div>
+  return (
+    <AuthenticationProvider
+      storageKey="jwt-accessToken"
+      refreshToken={async () => {
+        return 'xxxxxxx-xxxx-xxxxxx-xxx'
+      }}
+    >
+      <Routes>
+        <Route element={<RequireNoAuth redirectPath="/" loader={<Loader />} />}>
+          <Route path="/login" element={<LoginPage />} />
+        </Route>
+
+        <Route
+          element={<RequireAuth redirectPath="/login" loader={<Loader />} />}
+        >
+          <Route path="/" element={<Home />} />
+        </Route>
+      </Routes>
+    </AuthenticationProvider>
+  )
+}
+
+function Home() {
+  const { signOut } = useAuthentication()
+
+  return (
+    <div>
+      <h1>Home</h1>
+      <button onClick={() => signOut()}>Logout</button>
+      <div>
+        <RequirePermissions
+          roles={['editor']}
+          permissions={['delete articles']}
+          fallBack={<AccessDenied />}
+        >
+          Editor dashboard
+        </RequirePermissions>
+      </div>
+    </div>
+  )
+}
+
+function LoginPage() {
+  const { signIn } = useAuthentication()
+
+  const onLogin = async (event) => {
+    event.preventDefault()
+    const formData = new FormData(event.target)
+
+    /* ... Get response from API ... */
+    const response = {
+      accessToken: 'xxx-xxxx-xxx-xxxxx',
+      username: 'John Doe',
+      roles: ['editor'],
+      permissions: ['write articles, delete articles'],
+    }
+
+    signIn({
+      jwt: response.accessToken,
+      data: { username: response.username },
+      roles: response.roles,
+      permissions: response.permissions,
+    })
+  }
+
+  return (
+    <div>
+      <h1>Login</h1>
+      <div>
+        <form onSubmit={onLogin}>
+          <input name="email" type="email" />
+          <input name="password" type="password" />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+function Loader() {
+  return <div>Loading...</div>
+}
+
+function AccessDenied() {
+  return <div>Access Restricted</div>
 }
 
 const rootElement = document.getElementById('root')

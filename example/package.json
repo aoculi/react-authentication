@@ -14,6 +14,7 @@
   "devDependencies": {
     "@aoculi/react-authentication": "^0.6.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "react-router-dom": "^6.21.1",
     "vite": "^5.0.10"
   },
   "browserslist": {
