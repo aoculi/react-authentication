@@ -58,7 +58,7 @@ export interface SignOut {
 export interface Authentication extends AuthenticationParams, SignIn, SignOut {}
 
 export interface Login {
-  login: ({ jwt, data }: SignInParams) => void
+  login: (params: SignInParams) => void
 }
 export interface Logout {
   logout: () => void
@@ -80,4 +80,6 @@ export interface UseRefreshToken extends SignIn, SignOut, RefreshToken {
   setError: (message: string) => void
 }
 
-export interface UseAutoConnect extends Login, Logout {}
+export interface AutoConnect extends Login, SignOut {
+  storageData: SignInParams
+}

@@ -10,7 +10,6 @@ export function useRefreshToken({
   setError,
 }: UseRefreshToken) {
   const { jwt, data, roles } = useContext(AuthContext)
-
   useEffect(() => {
     if (!jwt || !refreshToken) return
 

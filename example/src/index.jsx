@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 import { AuthenticationProvider } from '@aoculi/react-authentication'
 import {
@@ -19,17 +19,21 @@ function App() {
         return 'xxxxxxx-xxxx-xxxxxx-xxx'
       }}
     >
-      <Routes>
-        <Route element={<RequireNoAuth redirectPath="/" loader={<Loader />} />}>
-          <Route path="/login" element={<LoginPage />} />
-        </Route>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            element={<RequireNoAuth redirectPath="/" loader={<Loader />} />}
+          >
+            <Route path="/login" element={<LoginPage />} />
+          </Route>
 
-        <Route
-          element={<RequireAuth redirectPath="/login" loader={<Loader />} />}
-        >
-          <Route path="/" element={<Home />} />
-        </Route>
-      </Routes>
+          <Route
+            element={<RequireAuth redirectPath="/login" loader={<Loader />} />}
+          >
+            <Route path="/" element={<Home />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </AuthenticationProvider>
   )
 }
@@ -49,6 +53,14 @@ function Home() {
         >
           Editor dashboard
         </RequirePermissions>
+
+        <RequirePermissions
+          roles={['admin']}
+          permissions={['delete articles']}
+          fallBack={<AccessDenied />}
+        >
+          Admin dashboard
+        </RequirePermissions>
       </div>
     </div>
   )
@@ -63,10 +75,11 @@ function LoginPage() {
 
     /* ... Get response from API ... */
     const response = {
-      accessToken: 'xxx-xxxx-xxx-xxxxx',
+      accessToken:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
       username: 'John Doe',
       roles: ['editor'],
-      permissions: ['write articles, delete articles'],
+      permissions: ['write articles', 'delete articles'],
     }
 
     signIn({
