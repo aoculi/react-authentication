@@ -1,6 +1,6 @@
-import { IStorageProvider } from '../../types.js'
+import { StorageProvider } from '../../types.js'
 
-export class CookieStorageProvider implements IStorageProvider {
+export class CookieStorageProvider implements StorageProvider {
   private storageKey: string
 
   constructor(key: string) {

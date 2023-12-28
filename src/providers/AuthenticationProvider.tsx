@@ -1,4 +1,4 @@
-import React, { createContext, FC, useEffect } from 'react'
+import React, { createContext, FC } from 'react'
 
 import {
   Authentication,
@@ -7,9 +7,10 @@ import {
   SignOutParams,
 } from '../types'
 import { useAuthenticationState } from '../hooks/useAuthenticationState'
+import { useRefreshToken } from '../hooks/useRefreshToken'
+import { useAutoConnect } from '../hooks/useAutoCOnnect.js'
 import { CookieStorageProvider } from '../utils/storage/CookieStorageProvider'
 import { LocalStorageProvider } from '../utils/storage/LocalStorageProvider'
-import { refreshTokenManager } from '../utils/refreshTokenManager'
 
 export const AuthContext = createContext<Authentication>({
   isAuthenticated: false,
@@ -46,23 +47,15 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
     if (afterSignIn) await afterSignIn()
   }
 
-  const signOut = async ({ afterSignOut }: SignOutParams) => {
+  const signOut = async (params?: SignOutParams) => {
     logout()
     await storageProvider.remove()
 
-    if (afterSignOut) await afterSignOut()
+    if (params?.afterSignOut) await params.afterSignOut()
   }
 
-  useEffect(() => {
-    refreshTokenManager({
-      storageProvider,
-      login,
-      logout,
-      setError,
-      refreshToken,
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  useRefreshToken({ refreshToken, signIn, signOut, setError })
+  useAutoConnect({ login, logout })
 
   return (
     <AuthContext.Provider value={{ ...authentication, signIn, signOut }}>

@@ -1,7 +1,12 @@
 import { ReactElement, ReactNode } from 'react'
 
-export interface AuthenticationProviderProps extends React.PropsWithChildren {
-  refreshToken?: Function
+export interface RefreshToken {
+  refreshToken: Function | null
+}
+
+export interface AuthenticationProviderProps
+  extends RefreshToken,
+    React.PropsWithChildren {
   storageKey?: string
   storageType?: 'localstorage' | 'cookie'
   children: ReactElement
@@ -30,7 +35,7 @@ export interface AuthenticationParams {
   permissions: string[]
 }
 
-export type SignInParams = {
+export interface SignInParams {
   jwt?: string | null
   data?: any | null
   roles?: string[] | null
@@ -38,35 +43,41 @@ export type SignInParams = {
   afterSignIn?: Function
 }
 
-export type SignOutParams = {
+export interface SignOutParams {
   afterSignOut?: Function
 }
 
-export type Authentication = AuthenticationParams & {
-  signIn: {
-    (params: {
-      jwt?: string | null
-      data?: any | null
-      roles?: string[] | null
-      permissions?: string[] | null
-      afterSignIn?: Function
-    }): Promise<void>
-  }
-  signOut: {
-    (params: { afterSignOut?: Function }): Promise<void>
-  }
+export interface SignIn {
+  signIn: (params: SignInParams) => Promise<void>
 }
 
-export interface RefreshTokenManagerParams {
-  storageProvider: IStorageProvider
+export interface SignOut {
+  signOut: (params?: SignOutParams) => Promise<void>
+}
+
+export interface Authentication extends AuthenticationParams, SignIn, SignOut {}
+
+export interface Login {
   login: ({ jwt, data }: SignInParams) => void
+}
+export interface Logout {
   logout: () => void
-  setError: (message: string) => void
-  refreshToken?: Function
 }
 
-export interface IStorageProvider {
+export interface RefreshTokenManagerParams extends RefreshToken, Login, Logout {
+  storageProvider: StorageProvider
+
+  setError: (message: string) => void
+}
+
+export interface StorageProvider {
   get(): Promise<any>
   set(value: any): Promise<void>
   remove(): Promise<void>
 }
+
+export interface UseRefreshToken extends SignIn, SignOut, RefreshToken {
+  setError: (message: string) => void
+}
+
+export interface UseAutoConnect extends Login, Logout {}
