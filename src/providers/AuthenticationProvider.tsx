@@ -1,14 +1,16 @@
-import React, { createContext, FC, useEffect } from 'react'
+import React, { createContext, FC, useCallback, useEffect } from 'react'
 
 import {
   Authentication,
   AuthenticationProviderProps,
   SignInParams,
+  SignOutParams,
 } from '../types'
 import { useAuthenticationState } from '../hooks/useAuthenticationState'
+// import { useRefreshToken } from '../hooks/useRefreshToken'
 import { CookieStorageProvider } from '../utils/storage/CookieStorageProvider'
 import { LocalStorageProvider } from '../utils/storage/LocalStorageProvider'
-import { refreshTokenManager } from '../utils/refreshTokenManager'
+import { autoConnect } from '../utils/autoConnect'
 
 export const AuthContext = createContext<Authentication>({
   isAuthenticated: false,
@@ -25,13 +27,12 @@ export const AuthContext = createContext<Authentication>({
 
 export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
   children,
-  refreshToken,
-  afterSignOut,
-  afterSignIn,
+  // refreshToken,
   storageKey,
   storageType = 'localstorage',
 }): JSX.Element => {
-  const { authentication, login, logout, setError } = useAuthenticationState()
+  const { authentication, login, logout /*setError*/ } =
+    useAuthenticationState()
 
   const currentStorageKey = storageKey || '_authentication'
 
@@ -40,33 +41,41 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
       ? new CookieStorageProvider(currentStorageKey)
       : new LocalStorageProvider(currentStorageKey)
 
-  const signIn = async ({ jwt, data, roles }: SignInParams) => {
-    await storageProvider.set({ jwt, data })
-    login({ jwt, data, roles })
+  const signIn = async ({
+    jwt,
+    data,
+    roles,
+    permissions,
+    afterSignIn,
+  }: SignInParams) => {
+    await storageProvider.set({ jwt, data, roles, permissions })
+    login({ jwt, data, roles, permissions })
 
-    if (afterSignIn) afterSignIn()
+    if (afterSignIn) await afterSignIn()
   }
 
-  const signOut = async () => {
+  const signOut = async (params?: SignOutParams) => {
     logout()
     await storageProvider.remove()
 
-    if (afterSignOut) afterSignOut()
+    if (params?.afterSignOut) await params.afterSignOut()
   }
 
-  useEffect(() => {
-    refreshTokenManager({
-      storageProvider,
-      login,
-      logout,
-      setError,
-      refreshToken,
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  const authProviderValue = { ...authentication, signIn, signOut }
+
+  const autoConnectCb = useCallback(async () => {
+    const storageData = await storageProvider.get()
+    autoConnect({ storageData, signOut, login })
   }, [])
 
+  useEffect(() => {
+    autoConnectCb()
+  }, [autoConnectCb])
+
+  // useRefreshToken({ refreshToken, signIn, signOut, setError })
+
   return (
-    <AuthContext.Provider value={{ ...authentication, signIn, signOut }}>
+    <AuthContext.Provider value={authProviderValue}>
       {children}
     </AuthContext.Provider>
   )
