@@ -27,6 +27,9 @@ export const autoConnect = ({ storageData, signOut, login }: AutoConnect) => {
         roles: storageData?.roles,
         permissions: storageData?.permissions,
       })
+    } else {
+      signOut()
+      return null
     }
   }
 
